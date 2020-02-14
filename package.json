@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "electron .",
-    "package": "electron-packager .", 
+    "package": "electron-packager .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Chandler Sommerville",
@@ -13,5 +13,9 @@
   "devDependencies": {
     "electron": "^8.0.0",
     "electron-packager": "^14.2.1"
+  },
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "pg": "^7.18.1"
   }
 }
