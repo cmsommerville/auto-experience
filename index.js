@@ -1,5 +1,5 @@
 const { app, BrowserWindow } = require("electron");
-const { ipcMain } = require("electron");
+const { ipcMain, dialog } = require("electron");
 
 function createWindow() {
     // Create the browser window.
@@ -15,9 +15,15 @@ function createWindow() {
 };
 
 
-ipcMain.on('async-log', (event, data) => {
-  console.log(data["filePaths"]);
+ipcMain.on('show-open-dialog', (event)=> {
+  dialog.showOpenDialog()
+  .then(result => {
+    console.log(result.filePaths)
+  }).catch(err => {
+    console.log(err)
+  })
 });
+
 
 app.allowRendererProcessReuse = false;
 app.on("ready", createWindow);
