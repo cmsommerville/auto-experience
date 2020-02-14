@@ -1,5 +1,5 @@
-const { app, BrowserWindow } = require("electron");
-const { ipcMain, dialog } = require("electron");
+const { app, BrowserWindow, ipcMain, dialog } = require("electron");
+const fs = require('fs');
 
 function createWindow() {
     // Create the browser window.
@@ -16,9 +16,23 @@ function createWindow() {
 
 
 ipcMain.on('show-open-dialog', (event)=> {
-  dialog.showOpenDialog()
+  // open dialog box to read input configuration file 
+  dialog.showOpenDialog({
+    // only allow JSON files to be read
+    filters: [{name: 'JSON', extensions: ['json']}]
+  })
   .then(result => {
-    console.log(result.filePaths)
+    // read first filename
+    filename = result.filePaths[0];
+
+    // read contents of filename
+    fs.readFile(filename, (err, data) => {
+      if (err) throw err;
+
+      let config_file = JSON.parse(data);
+      console.log(config_file);
+    });
+
   }).catch(err => {
     console.log(err)
   })
