@@ -1,18 +1,20 @@
 const dotenv = require('dotenv');
 dotenv.config();
 
-const { Client } = require('pg')
-const client = new Client()
+const { Client } = require('pg');
+const { convert_rows } = require('./data-handling')
 
-console.log(`Your database is ${process.env.PGDATABASE}`);
+
+const client = new Client();
+
 
 client.connect()
-client.query('SELECT COUNT(1) AS MyCount FROM app1.experience', (err, res) => {
+client.query("SELECT * FROM app1.experience WHERE GRPNUM = '0000002000'", (err, res) => {
   if (err) {
     console.log(err.stack);
-    client.end();
   } else {
-    console.log(res.rows[0]);
-    client.end();
+    let data = convert_rows(res.rows);
+    console.log(data);
   }
+  client.end();
 })
