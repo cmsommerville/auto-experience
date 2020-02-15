@@ -1,20 +1,25 @@
 const dotenv = require('dotenv');
 dotenv.config();
-
 const { Client } = require('pg');
-const { convert_rows } = require('./data-handling')
+const { db_rows_to_JSON, experience_query_builder } = require('./data-handling')
 
 
+// connect to client using environmental variables
 const client = new Client();
-
-
 client.connect()
-client.query("SELECT * FROM app1.experience WHERE GRPNUM = '0000002000'", (err, res) => {
+
+// build experience query string
+let experience_query = experience_query_builder(['0000001000', '0000002000']);
+
+// execute query
+client.query(experience_query, (err, res) => {
   if (err) {
     console.log(err.stack);
   } else {
-    let data = convert_rows(res.rows);
+
+    // convert data into object that can be inserted HTML
+    let data = db_rows_to_JSON(res.rows);
     console.log(data);
   }
   client.end();
-})
+});

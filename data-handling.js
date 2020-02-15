@@ -1,4 +1,38 @@
-const convert_rows = (data) => {
+
+const experience_query_builder = (groups) => {
+  const table_experience = 'app1.experience';
+  let group_list = groups.join('\',\'');
+  group_list = group_list.replace('[^A-Za-z0-9-_,]', '');
+
+  let query =
+    `SELECT lob, experience_year, SUM(earned_prem) AS earned_prem, SUM(incurred_clms) AS incurred_clms
+    FROM ${table_experience}
+    WHERE grpnum IN (\'${group_list}\')
+    GROUP BY lob, experience_year
+    ORDER BY lob, experience_year`;
+
+  return query;
+};
+
+const utilization_query_builder = (groups) => {
+  const table_utilization = 'app1.utilization';
+  let group_list = groups.join('\',\'');
+  group_list = group_list.replace('[^A-Za-z0-9-_,]', '');
+
+  let query =
+    `SELECT lob, experience_year, SUM(earned_prem) AS earned_prem, SUM(incurred_clms) AS incurred_clms
+    FROM ${table_utilization}
+    WHERE grpnum IN (\'${group_list}\')
+    GROUP BY lob, experience_year
+    ORDER BY lob, experience_year`;
+
+  return query;
+};
+
+
+const db_rows_to_JSON = (data) => {
+  // converts database rows that are returned as a list of JSON objects
+  // into a single object split by line of business
 
   let experience = new Object();
 
@@ -42,5 +76,6 @@ const convert_rows = (data) => {
 
 
 
-
-exports.convert_rows = convert_rows;
+exports.experience_query_builder = experience_query_builder;
+exports.utilization_query_builder = utilization_query_builder;
+exports.db_rows_to_JSON = db_rows_to_JSON;
