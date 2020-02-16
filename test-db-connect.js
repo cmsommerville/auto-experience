@@ -4,9 +4,6 @@ const { Client } = require('pg');
 const { db_rows_to_JSON, experience_query_builder } = require('./data-handling')
 
 
-// connect to client using environmental variables
-const client = new Client();
-client.connect()
 
 // build experience query string
 let experience_query = experience_query_builder(['0000001000', '0000002000']);

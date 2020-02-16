@@ -1,5 +1,21 @@
 const { app, BrowserWindow, ipcMain, dialog } = require("electron");
 const fs = require('fs');
+const { run_query } = require("./database");
+const { db_rows_to_JSON, experience_query_builder } = require("./data-handling");
+
+
+const getQueryResults = async (input_data) => {
+  try {
+    const query_string = await experience_query_builder(input_data['groups']);
+    const experience_data_raw = await run_query(query_string);
+    const experience_data = await db_rows_to_JSON(experience_data_raw);
+    console.log(experience_data);
+  }
+  catch {
+    console.log("Can't get query results")
+  }
+};
+
 
 function createWindow() {
     // Create the browser window.
@@ -16,7 +32,7 @@ function createWindow() {
 
 
 ipcMain.on('show-open-dialog', (event)=> {
-  // open dialog box to read input configuration file 
+  // open dialog box to read input configuration file
   dialog.showOpenDialog({
     // only allow JSON files to be read
     filters: [{name: 'JSON', extensions: ['json']}]
@@ -28,10 +44,12 @@ ipcMain.on('show-open-dialog', (event)=> {
     // read contents of filename
     fs.readFile(filename, (err, data) => {
       if (err) throw err;
+      let input_data = JSON.parse(data);
 
-      let config_file = JSON.parse(data);
-      console.log(config_file);
+      // function reads group numbers, queries DB, and returns experience
+      getQueryResults(input_data);
     });
+
 
   }).catch(err => {
     console.log(err)
