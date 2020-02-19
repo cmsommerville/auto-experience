@@ -8,8 +8,9 @@ const getQueryResults = async (input_data) => {
   try {
     const query_string = await experience_query_builder(input_data['groups']);
     const experience_data_raw = await run_query(query_string);
+    console.log(experience_data_raw);
     const experience_data = await db_rows_to_JSON(experience_data_raw);
-    console.log(experience_data);
+    //console.log(experience_data);
   }
   catch {
     console.log("Can't get query results")
