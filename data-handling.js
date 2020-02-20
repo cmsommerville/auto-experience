@@ -35,47 +35,40 @@ const utilization_query_builder = (groups) => {
 const db_rows_to_JSON = (data) => {
   return new Promise((resolve, reject) => {
 
-      let experience = new Object();
+    let experience = new Object();
 
-      for (var i=0; i < data.length; i++) {
+    for (var i=0; i < data.length; i++) {
 
-        // add LOB key
-        let lob = data[i]["lob"];
-        if (!(lob in experience)) {
-          experience[lob] = new Object();
-        };
+      // add LOB key
+      let lob = data[i]["lob"];
+      if (!(lob in experience)) {
+        experience[lob] = new Object();
+        experience[lob]["name"] = lob;
+        experience[lob]["experience"] = [];
+      };
 
-        let year = data[i]["experience_year"];
-        if (!("year" in experience[lob])) {
-          let arr = [year];
-          experience[lob]["year"] = arr;
-        } else {
-          experience[lob]["year"].push(year);
-        }
+      let current_experience = new Object();
+      current_experience["year"] = data[i]["experience_year"];
+      current_experience["earnedPrem"] = Number(data[i]["earned_prem"]).toFixed(2);
+      current_experience["incClaims"] = Number(data[i]["incurred_clms"]).toFixed(2);
+      current_experience["lossRatio"] = Number(data[i]["incurred_clms"] / data[i]["earned_prem"]).toFixed(4);
 
-        let earned_prem = data[i]["earned_prem"];
-        if (!("earned_prem" in experience[lob])) {
-          let arr = [earned_prem];
-          experience[lob]["earned_prem"] = [earned_prem];
-        } else {
-          experience[lob]["earned_prem"].push(earned_prem);
-        }
+      experience[lob]["experience"].push(current_experience);
+    };;
 
-        let incurred_clms = data[i]["incurred_clms"];
-        if (!("incurred_clms" in experience[lob])) {
-          let arr = [incurred_clms];
-          experience[lob]["incurred_clms"] = [incurred_clms];
-        } else {
-          experience[lob]["incurred_clms"].push(incurred_clms);
-        }
-      }
-
-      resolve(experience);
-  })
-  // converts database rows that are returned as a list of JSON objects
-  // into a single object split by line of business
+    resolve({expdata: experience});
+  });
 };
 
+
+
+const template_handler = (data, html) => {
+  return new Promise((resolve, reject) => {
+
+    let output = html.replace("{% VUE_DATA_OBJECT %}", JSON.stringify(data));
+    resolve(output);
+  });
+};
 
 
 
@@ -83,3 +76,4 @@ const db_rows_to_JSON = (data) => {
 exports.experience_query_builder = experience_query_builder;
 exports.utilization_query_builder = utilization_query_builder;
 exports.db_rows_to_JSON = db_rows_to_JSON;
+exports.template_handler = template_handler;

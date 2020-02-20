@@ -1,16 +1,35 @@
 const { app, BrowserWindow, ipcMain, dialog } = require("electron");
 const fs = require('fs');
 const { run_query } = require("./database");
-const { db_rows_to_JSON, experience_query_builder } = require("./data-handling");
+const { db_rows_to_JSON, experience_query_builder, template_handler } = require("./data-handling");
+
+let html_template = fs.readFileSync("./templates/main/template-main.html", "utf-8");
 
 
-const getQueryResults = async (input_data) => {
+
+const createReport = async (input_data, html_template) => {
   try {
+    // read input data and create query string
     const query_string = await experience_query_builder(input_data['groups']);
+
+    // execute query against the database
     const experience_data_raw = await run_query(query_string);
-    console.log(experience_data_raw);
-    const experience_data = await db_rows_to_JSON(experience_data_raw);
-    //console.log(experience_data);
+
+    // format the results into vue.js compatible JSON object
+    let experience_data = await db_rows_to_JSON(experience_data_raw);
+
+    experience_data["report_from"] = input_data["report_from"];
+    experience_data["report_thru"] = input_data["report_thru"];
+    experience_data["report_name"] = input_data["report_name"];
+
+    // pass result data into HTML template
+    const output_html = await template_handler(experience_data, html_template);
+
+    // write final file
+    fs.writeFile("./output.html", output_html, (err)=> {
+      if (err) throw err;
+      console.log("The file has been written!");
+    });
   }
   catch {
     console.log("Can't get query results")
@@ -22,7 +41,7 @@ function createWindow() {
     // Create the browser window.
     let win = new BrowserWindow({
         width: 800,
-        height: 600,
+        height: 400,
         webPreferences: {
             nodeIntegration: true
         }
@@ -48,13 +67,13 @@ ipcMain.on('show-open-dialog', (event)=> {
       let input_data = JSON.parse(data);
 
       // function reads group numbers, queries DB, and returns experience
-      getQueryResults(input_data);
+      createReport(input_data, html_template);
     });
 
 
   }).catch(err => {
     console.log(err)
-  })
+  });
 });
 
 

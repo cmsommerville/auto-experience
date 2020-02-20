@@ -1,27 +1,27 @@
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="skeleton.css" />
-<link rel="stylesheet" type="text/css" href="style.css" />
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" type="text/css" href="style.css" />
+
 </head>
 <body>
-  <h1>My First Electron App</h1>
-  <form>
+  <div class="jumbotron jumbotron-fluid my-jumbotron">
+      <div class="container jumbotron-text">
+          <h1 class="display-4">Auto Experience Generator</h1>
+          <p class="lead">Built by Chandler Sommerville</p>
+      </div>
+  </div>
+  <div class="container-fluid">
     <div class="row">
-      <div class="six columns">
-        <label for="report-from-date">From Date</label>
-        <input class="u-full-width" type="date" id="report-from-date">
-      </div>
-      <div class="six columns">
-        <label for="report-thru-date">Thru Date</label>
-        <input class="u-full-width" type="date" id="report-thru-date">
-      </div>
-    </div>
-    <label for="report-title">Report Title</label>
-    <textarea class="u-full-width" placeholder="Title" id="report-title"></textarea>
-    <input class="button" type="submit" value="Submit" id="submit-button">
-    <input class="button" type="submit" value="Select File" id="open-file-button">
-  </form>
+      <div class="col"></div>
 
+      <div class="col-6">
+        <button type="button" id="open-file-button" class="btn btn-secondary btn-lg btn-block">Select File</button>
+      </div>
+      <div class="col"></div>
+    </div>
+  </div>
   <script src="app.js"></script>
 </body>
 </html>
