@@ -73,7 +73,23 @@ const template_handler = (data, html) => {
 
 
 
+const currentTimeStamp = () => {
+  const now = new Date();
+  const day = now.getDate();
+  const month = now.getMonth();
+  const year = now.getFullYear();
+
+  const hour = now.getHours();
+  const minute = now.getMinutes();
+  const sec = now.getSeconds();
+
+  return ([year * 10000 + month * 100 + day, hour * 10000 + minute * 100 + sec].join("-"))
+};
+
+
+
 exports.experience_query_builder = experience_query_builder;
 exports.utilization_query_builder = utilization_query_builder;
 exports.db_rows_to_JSON = db_rows_to_JSON;
 exports.template_handler = template_handler;
+exports.currentTimeStamp = currentTimeStamp; 
